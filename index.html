@@ -5,40 +5,197 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Party Access Check</title>
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Poppins", sans-serif;
+        height: 100vh;
+        width: 100vw;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        background-color: #111;
-        color: #fff;
         text-align: center;
-        flex-direction: column;
+        color: #fff;
+        background: url("img/faruqjpg.JPG") no-repeat center center/cover;
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 1.5s ease forwards;
+        padding: 0 1rem;
       }
-      .granted {
-        color: #00ff6a;
-        font-size: 2rem;
+
+      /* Soft dark overlay to make text readable */
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 0;
       }
-      .denied {
-        color: #ff3b3b;
-        font-size: 2rem;
+
+      h1,
+      p {
+        position: relative;
+        z-index: 1;
+        word-wrap: break-word;
       }
+
       h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
         margin-bottom: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        animation: fadeUp 1.5s ease;
       }
-      .type {
-        font-size: 1.5rem;
-        opacity: 0.8;
+
+      p {
+        font-size: clamp(1rem, 3vw, 1.5rem);
+        opacity: 0.9;
+        animation: fadeUp 2s ease;
+        max-width: 90%;
+      }
+
+      /* Access Granted (gold glow) */
+      .granted {
+        color: #ffd700;
+        text-shadow: 0 0 15px rgba(255, 215, 0, 0.6),
+          0 0 40px rgba(255, 215, 0, 0.4);
+        animation: glow 2s ease-in-out infinite alternate;
+      }
+
+      /* Access Denied (red glow) */
+      .denied {
+        color: #ff4b5c;
+        text-shadow: 0 0 10px rgba(255, 75, 92, 0.6),
+          0 0 25px rgba(255, 75, 92, 0.4);
+        animation: pulse 1.5s infinite alternate;
+      }
+
+      /* Animations */
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+        to {
+          text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        }
+      }
+
+      @keyframes pulse {
+        from {
+          transform: scale(1);
+          opacity: 1;
+        }
+        to {
+          transform: scale(1.05);
+          opacity: 0.9;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Floating sparkles */
+      .sparkle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+        filter: blur(1px);
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+          opacity: 0.8;
+        }
+        50% {
+          transform: translateY(-40px);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 0.8;
+        }
+      }
+
+      /* 🎯 Responsiveness tweaks */
+      @media (max-width: 768px) {
+        body {
+          background-position: center top;
+        }
+
+        h1 {
+          font-size: clamp(1.8rem, 6vw, 2.5rem);
+        }
+
+        p {
+          font-size: clamp(1rem, 4vw, 1.3rem);
+        }
+
+        .sparkle {
+          width: 5px;
+          height: 5px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 0 1rem;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        p {
+          font-size: 1.1rem;
+        }
       }
     </style>
   </head>
   <body>
     <h1 id="message"></h1>
-    <p class="type" id="type"></p>
+    <p id="type"></p>
+
+    <!-- Floating sparkles -->
+    <div class="sparkle" style="top: 15%; left: 20%; animation-delay: 0s"></div>
+    <div
+      class="sparkle"
+      style="top: 45%; left: 80%; animation-delay: 1.2s"
+    ></div>
+    <div class="sparkle" style="top: 70%; left: 50%; animation-delay: 2s"></div>
+    <div class="sparkle" style="top: 30%; left: 10%; animation-delay: 3s"></div>
+    <div class="sparkle" style="top: 85%; left: 70%; animation-delay: 4s"></div>
 
     <script>
-      // Get the URL parameter
       const params = new URLSearchParams(window.location.search);
       const access = params.get("access");
 
